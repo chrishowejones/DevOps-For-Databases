@@ -5,3 +5,27 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: TerraformCLI@2
+  inputs:
+    command: 'init'
+    workingDirectory: 'SQL-Server-Creation'
+    backendType: 'azurerm'
+    backendServiceArm: 'Azure subscription 1(a405e5f3-130b-4b87-a7d6-65060b084f20)'
+    backendAzureRmResourceGroupName: 'cloudskills-rg'
+    backendAzureRmStorageAccountName: 'cloudskillsdevsops'
+    backendAzureRmContainerName: 'databasedevops'
+    backendAzureRmKey: 'terraform.tfstate'
+
+- task: TerraformCLI@2
+  inputs:
+    command: 'plan'
+    workingDirectory: 'SQL-Server-Creation'
+    environmentServiceName: 'Azure subscription 1(a405e5f3-130b-4b87-a7d6-65060b084f20)'
+    commandOptions: '-var="password=${PASSWORD}" -var "ip_address=${IP_ADDRESS}"'
+
+- task: TerraformCLI@2
+  inputs:
+    command: 'apply'
+    workingDirectory: 'SQL-Server-Creation'
+    environmentServiceName: 'Azure subscription 1(a405e5f3-130b-4b87-a7d6-65060b084f20)'
+    commandOptions: '-var="password=${PASSWORD}" -var "ip_address=${IP_ADDRESS}"'
